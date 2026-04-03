@@ -23,8 +23,8 @@ def suggest_enum(port, service):
         "Email Service": [
             "Enumerate SMTP users with smtp-user-enum",
             "Check for open mail relay"
-]
-} 
+            ],
+ }
 
 
     return suggestions.get(service, ["No specific enumeration suggestions"])

@@ -1,8 +1,3 @@
-
-
-
-
-
 # classifier.py
 # Categories services discovered in Nmap scans
 
