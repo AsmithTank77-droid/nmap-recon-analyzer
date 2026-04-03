@@ -1,44 +1,18 @@
-# analyzer.py
-# Part of: nmap-recon-analyzer
-# Main entry point — orchestrates parsing, classification, risk scoring,
-# enumeration suggestions, and formatted output.
-from scan_xml import parse_scan
-from classifier import classify_service
-from risk_engine import process_all_hosts, summary_report
-from enum_suggestions import suggest_enum
-from formatter import format_output
-def main():
-    # 1. Parse the Nmap XML scan file
-    raw_hosts = parse_scan("scan.xml")
+import sys
 
-    if not raw_hosts:
-        print("[!] No hosts found in scan.xml")
-        return
+def analyze_nmap(file):
+    with open(file, "r") as f:
+        lines = f.readlines()
 
-    # 2. Run risk engine across all hosts (sorted by composite score)
-    host_risks = process_all_hosts(raw_hosts)
+    print("Open Ports Found:\n")
 
-    # 3. Build flat analyzed_results list for formatter/enum (per-port view)
-    analyzed_results = []
-    for hr in host_risks:
-        for p in hr["ports"]:
-            service_category = classify_service(p["port"])
-            enum_cmds = suggest_enum(p["port"], service_category)
-            analyzed_results.append({
-                "host": hr["ip"],
-                "port": p["port"],
-                "protocol": p["protocol"],
-                "service": p["service"],
-                "risk": p["risk"],
-                "enum": enum_cmds,
-            })
-
-    # 4. Print risk engine summary
-    summary_report(host_risks)
-
-    # 5. Print SOC-style formatted output with enum suggestions
-    format_output(analyzed_results, analyzed_results)
-
+    for line in lines:
+        if "/tcp" in line and "open" in line:
+            print(line.strip())
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) != 2:
+        print("Usage: python analyzer.py scan.txt")
+        sys.exit()
+
+    analyze_nmap(sys.argv[1])
