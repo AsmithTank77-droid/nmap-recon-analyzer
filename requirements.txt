@@ -1,0 +1,8 @@
+# Runtime — no third-party dependencies.
+# Pure Python 3.8+ standard library only.
+#
+#   python3 analyzer.py scan.xml
+
+# Development (testing only)
+# pip install pytest
+# pytest tests/
